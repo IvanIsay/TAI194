@@ -1,6 +1,7 @@
 from fastapi import FastAPI,HTTPException
 from typing import Optional,List
-from models import modelUsuario
+from models import modelUsuario, modelAuth
+from genToken import createToken 
 
 app= FastAPI(
     title="Mi primer API 194",
@@ -21,6 +22,18 @@ usuarios=[
 def home():
     return {'hello':'world fastApi'}
 
+
+
+#EndPoint para generar Token
+@app.post('/auth',tags=['Autentificacion'])
+def auth(credenciales:modelAuth):
+    if credenciales.mail == 'ivan@example.com' and credenciales.passw == '123456789':
+        token:str= createToken(credenciales.model_dump())
+        print(token)
+        return {"Aviso:":"Token Generado"}
+    else:
+        return {"Aviso:":"Usuario no cuenta con permiso"}
+        
 
 
 
