@@ -15,18 +15,15 @@ app= FastAPI(
 
 Base.metadata.create_all(bind= engine)
 
-usuarios=[
-    {"id":1, "nombre":"Ivan","edad":37, "correo":"Ivan@example.com"},
-    {"id":2, "nombre":"Fernando","edad":21, "correo":"fenando@example.com"},
-    {"id":3, "nombre":"Karla","edad":21, "correo":"karla@example.com"},
-    {"id":4, "nombre":"Gonzalo","edad":21, "correo":"gonzalo@example.com"},
-]
 
-
-#ruta o EndPointcl
+#EndPoint Inicio
 @app.get('/',tags=['Inicio'])
 def home():
     return {'hello':'world fastApi'}
+
+
+
+# --------- CRUD de Usuarios ----------- #
 
 
 #EndPoint CONSULTA TODOS
@@ -66,10 +63,9 @@ def leeruno(id:int):
     finally:
         db.close()       
         
-        
-        
+             
     
-#EndPoint POST
+#EndPoint agregar Usuario
 @app.post('/usuarios/',response_model=modelUsuario,tags=['Operaciones CRUD'])
 def guardar(usuario:modelUsuario):
     db=Session()
@@ -89,8 +85,7 @@ def guardar(usuario:modelUsuario):
 
 
 
-
-#Endpoint para actualizar
+#Endpoint para actualizar usuario
 @app.put('/usuario/{id}', response_model=modelUsuario, tags=['Operaciones CRUD'])
 def actualizar(id:int,usuarioActualizado:modelUsuario):
     db = Session()
@@ -113,6 +108,7 @@ def actualizar(id:int,usuarioActualizado:modelUsuario):
         db.close()
 
 
+#Endpoint para eliminar usuario
 @app.delete('/usuario/{id}',tags=['Operaciones CRUD'])
 def eliminar(id:int):
     db = Session()
@@ -130,15 +126,10 @@ def eliminar(id:int):
         return JSONResponse(status_code=500, content={"message": "No fue posible eliminar", "Error": str(e)})
     finally:
         db.close()
+        
+        
 
-
-
-
-
-  
-
-
-
+# --------------- AUtenticacion ----------- #
 
 #EndPoint para generar Token
 @app.post('/auth',tags=['Autentificacion'])
